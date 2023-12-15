@@ -1,0 +1,13 @@
+//Forma anterior
+// @import'base/variables';
+// @import'contenido/contenido';
+//termina la forma anterior
+
+
+//forma actual de importar siempre se tiene qu etener un archivo _index.css
+//@forward 'variables'; se pone el nombre de la carpeta
+
+@use 'base';
+@use 'layout';
+
+
