@@ -6,6 +6,8 @@ const sass =require("gulp-sass") (require("sass"));
 const plumber = require('gulp-plumber');
 
 //imágenes 
+const cache = require('gulp-cache');
+const imagemin= require ('gulp-imagemin') ;  //comprime las imagenes
 const webp = require('gulp-webp');
 
 //css
@@ -16,6 +18,16 @@ function css(done){
         .pipe(sass())     //Compilar
         .pipe(dest("build/css"));  //Almecenar en el disco duro
    
+    done();
+}
+
+function imagenes(done){
+    const opciones = {
+        optimationLevel: 3
+    };
+    src('src/img/**/*.{png,jpg}')
+        .pipe(cache(imagemin(opciones) ))
+        .pipe(dest('build/img'))
     done();
 }
 
@@ -35,8 +47,9 @@ function dev(done){
     done();
 }
 exports.css = css;
+exports.imagenes = imagenes;
 exports.versionwebp = versionwebp;
-exports.dev = parallel( versionwebp, dev);
+exports.dev = parallel( imagenes,versionwebp, dev);
 
 
 //npx gulp dev 
