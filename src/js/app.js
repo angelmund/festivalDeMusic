@@ -1,51 +1,92 @@
-const { imagenes } = require("../../gulpfile");
-// imagen.index = i;
+// Elimina la línea con require, ya que no es necesario en el navegador.
 
 document.addEventListener('DOMContentLoaded', function () {
     iniciarApp();
-})
+});
 
 function iniciarApp() {
+    navegacionFija();
     crearGaleria();
+    scrollNav();
+}
+
+function navegacionFija(){
+    const barra = document.querySelector('.header');
+    const video = document.querySelector('.video');
+    const body = document.querySelector('body');
+
+    window.addEventListener('scroll', function(){
+        console.log(video.getBoundingClientRect()); //mustra la ubicacion de alguna seccion 
+        if(video.getBoundingClientRect().top <0){
+            barra.classList.add('fijo');
+            body.classList.add('body-scroll');
+        }else{
+            barra.classList.remove('fijo');
+            body.classList.remove('body-scroll');
+        }
+    });
+}
+
+function scrollNav(){
+    const enlaces = document.querySelectorAll('.navegacion-principal a')
+    
+    enlaces.forEach( enlace =>{
+        enlace.addEventListener('click', function(e){
+            e.preventDefault();
+
+            const seccionScroll = e.target.attributes.href.value; //obtiene el id del atributo que se le de click 
+            const seccion = document.querySelector(seccionScroll);
+            seccion.scrollIntoView({ behavior: "smooth"});
+        });
+    });
 }
 
 function crearGaleria() {
     const galeria = document.querySelector('.galeria-imagenes');
 
-    for (let i=1; i<=12; i++) {
+    for (let i = 1; i <= 12; i++) {
         let imagen = document.createElement('picture');
-        //inserta las imagenes en el html
         imagen.innerHTML = `
-                <source srcset="build/img/thumb/${i}.avif" type="imagen/avif">
-                <source srcset="build/img/thumb/${i}.webp" type="imagen/webp">
-                <img loading="lazy" with="200" height="300" src="build/img/thumb/${i}.jpg" alt="Imagen vocalista">
+                <source srcset="build/img/thumb/${i}.avif" type="image/avif">
+                <source srcset="build/img/thumb/${i}.webp" type="image/webp">
+                <img loading="lazy" width="200" height="300" src="build/img/thumb/${i}.jpg" alt="Imagen vocalista">
         `;
 
-        // imagen.index = i;
-        
-        imagen.onclick = function() {
+        imagen.onclick = function () {
             mostrarImagen(i);
-        }
- 
+        };
 
         galeria.appendChild(imagen);
-
     }
 }
 
-function mostrarImgen(i) {
-    const modalImagen = document.querySelector("picture");
-    //abre modal de imagen
+function mostrarImagen(id) {
+    const modalImagen = document.querySelector('picture');
     modalImagen.innerHTML = `
-    <source srcset="build/img/grande/${i}.avif" type="imagen/avif">
-    <source srcset="build/img/grande/${i}.webp" type="imagen/webp">
-    <img loading="lazy" with="200" height="300" src="build/img/grande/${i}.jpg" alt="Imagen vocalista">
+    <source srcset="build/img/grande/${id}.avif" type="image/avif">
+    <source srcset="build/img/grande/${id}.webp" type="image/webp">
+    <img loading="lazy" width="200" height="300" src="build/img/grande/${id}.jpg" alt="Imagen vocalista">
     `;
 
-    const overlay = document.createElement('DIV')
-    overlay.appendChild(modalImagen);
+    //crea el Overlay con la imagen
+    const overlay = document.createElement('div');
+    overlay.appendChild(modalImagen.cloneNode(true));
     overlay.classList.add('overlay');
 
+    //Button para cerrar el modal 
+    const CerrarModal = document.createElement('P');
+    CerrarModal.textContent = 'X';
+    CerrarModal.classList.add('btn-cerrar');
+    CerrarModal.onclick = function () {
+        const body = document.querySelector('body');
+        body.classList.remove('fijar-body');
+        overlay.remove();
+    }
+    overlay.appendChild(CerrarModal);
+
+
+    //añade al HTML 
     const body = document.querySelector('body');
-    body.appendChild(overlay)
+    body.appendChild(overlay);
+    body.classList.add('fijar-body');
 }

@@ -4,6 +4,9 @@ const {src,dest, watch, parallel} = require("gulp");//es el que está en el pack
 //css
 const sass =require("gulp-sass") (require("sass"));
 const plumber = require('gulp-plumber');
+const autoprefixer = require('gulp-autoprefixer');
+const cssnano = require('cssnano');
+const psotcss = require('gulp-postcss');
 
 //imágenes 
 const cache = require('gulp-cache');
@@ -17,6 +20,7 @@ function css(done){
     src('src/scss/**/*.scss') //identificar el archivo de SASS
         .pipe(plumber())
         .pipe(sass())     //Compilar
+        .pipe(psotcss([autoprefixer(), cssnano()]))
         .pipe(dest("build/css"));  //Almecenar en el disco duro
    
     done();
